@@ -68,7 +68,7 @@
             <div class="colorSquares">
             `;
             for (let i = 0; i < 4; i++) {
-                html += `<div onclick="userClickColor('${allColors[i].color}')" style="background-color: ${allColors[i].color};"></div>`;
+                html += `<div onclick="${userTurn ? `userClickColor('${allColors[i].color}')` : ''}" style="background-color: ${allColors[i].color};"></div>`;
             }
             html += `</div>`;
             document.getElementById('app').innerHTML = html;
@@ -80,6 +80,7 @@
             simonColorOrder = [];
             userColorSelected = [];
             howManyRounds = 1;
+            userTurn = false;
             score = 0;
             i = -1;
         }
@@ -99,37 +100,38 @@
                 }, delay2);
                 delay2 += 1000;
                 setTimeout(() => {
-
+                    console.log('loopnumber ' + i)
                     console.log(simonColorOrder)
                     allColors[0].color = 'blue';
                     allColors[1].color = 'green';
                     allColors[2].color = 'pink';
                     allColors[3].color = 'red';
                     updateView();
+                    if (i >= howManyRounds - 1) {
+                        userTurn = true;
+                        console.log('this should run after ' + i)
+                        updateView();
+                    }
                 }, 1000 * (i + 1));
+                console.log('how many round is ' + howManyRounds)
+
             }
         }
-        /* function compareTwoArrays(arr1, arr2) {
-            return arr1.every((element, index) => {
-                return element === arr2[index]
-            });
-        } */
-
-
 
         function userClickColor(colorSelected) {
+
             i++;
             userColorSelected.push(colorSelected);
-
             const isCorrect = userColorSelected.every((value, index) => value === simonColorOrder[index])
             userClicks++
             if (isCorrect && userClicks >= simonColorOrder.length) {
                 score++;
-                simonColorOrder = [];
                 howManyRounds++;
-                userColorSelected = [];
-                simonSaysGameStart();
                 userClicks = 0;
+                userTurn = false;
+                userColorSelected = [];
+                simonColorOrder = [];
+                simonSaysGameStart();
                 i = -1;
             } else if (!isCorrect) {
                 alert('wrong')
@@ -138,28 +140,6 @@
             }
             updateView();
         }
-        /* function userClickColor(colorSelected) {
-            i++;
-
-
-            userColorSelected.push(colorSelected);
-            userClicks++
-            if (userColorSelected.toString() == simonColorOrder.toString()) {
-                score++;
-                simonColorOrder = [];
-                howManyRounds++;
-                userColorSelected = [];
-                simonSaysGameStart();
-                userClicks = 0;
-                i = -1;
-            } else if (userColorSelected.toString().at(i) != simonColorOrder.toString().at(i)) {
-                alert('wrong')
-                gameStateStart();
-                i = -1;
-            }
-            updateView();
-        }
- */
     </script>
 </body>
 
