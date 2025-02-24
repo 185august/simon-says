@@ -41,7 +41,7 @@
         let howManyRounds = 1;
         let userTurn = false;
         let randomNumber;
-        let html = '';
+        let userClicks = 0;
         let score = '';
 
         let allColors = [
@@ -53,7 +53,7 @@
 
         // View 
         function updateView() {
-
+            let html;
             html = /*HTML*/ `
             <button onclick="simonSaysGameStart()">Start game</button>
             <div>Score:  ${score ?? ''}
@@ -66,30 +66,8 @@
         }
 
         // Controller 
-
-        function gameLoop(i) {
-
-
-
-            /* setTimeout(() => {
-                setTimeout(() => {
-                    console.log(simonColorOrder)
-                    allColors[0].color = 'blue';
-                    allColors[1].color = 'green';
-                    allColors[2].color = 'pink';
-                    allColors[3].color = 'red';
-                    updateView();
-                }, 500 + i);
-                randomNumber = Math.floor(Math.random() * 4)
-                simonColorOrder += allColors[randomNumber].color
-                allColors[randomNumber].color = 'yellow'
-                updateView();
-            }, 1000 + i); */
-        }
-
-
         const generateRandomNumber = () => {
-            randomNumber = Math.floor(Math.random() * (5 - 1)) + 1
+            randomNumber = Math.floor(Math.random() * 4) + 1
             console.log(randomNumber)
         }
 
@@ -104,7 +82,7 @@
                     console.log('print2 :' + delay2)
 
                 }, delay2);
-                delay2 += 1000
+                delay2 += 1000;
                 setTimeout(() => {
 
                     console.log(simonColorOrder)
@@ -119,15 +97,20 @@
 
         function userClickColor(colorSelected) {
             userColorSelected.push(colorSelected);
+            userClicks++
             if (userColorSelected.toString() == simonColorOrder.toString()) {
                 score++;
-                updateView();
                 simonColorOrder = [];
                 console.log(simonColorOrder)
                 howManyRounds++;
                 userColorSelected = [];
                 simonSaysGameStart();
+                userClicks = 0;
+            } else if (userClicks >= simonColorOrder.length && userColorSelected.toString() != simonColorOrder.toString()) {
+                alert('wrong')
+                score = 0;
             }
+            updateView();
         }
 
     </script>
