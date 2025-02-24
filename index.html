@@ -8,6 +8,7 @@
     <style>
         .app {
             display: flex;
+
         }
 
         body,
@@ -37,11 +38,11 @@
         // Model
         let userColorSelected = [];
         let simonColorOrder = [];
-        let howManyRounds = 4;
+        let howManyRounds = 1;
         let userTurn = false;
         let randomNumber;
-        let index;
         let html = '';
+        let score = '';
 
         let allColors = [
             { color: 'blue' },
@@ -55,6 +56,7 @@
 
             html = /*HTML*/ `
             <button onclick="simonSaysGameStart()">Start game</button>
+            <div>Score:  ${score ?? ''}
             `
             for (let i = 0; i < 4; i++) {
                 html += ` <div class="colorSquares"; onclick="userClickColor('${allColors[i].color}')"; style="background-color: ${allColors[i].color};"></div><br>
@@ -95,35 +97,37 @@
             let delay2 = 501;
             for (let i = 0; i < howManyRounds; i++) {
                 setTimeout(() => {
-                    setTimeout(() => {
-                        randomNumber = Math.floor(Math.random() * 4)
-                        simonColorOrder += allColors[randomNumber].color
-                        allColors[randomNumber].color = 'yellow'
-                        updateView();
-                        console.log('print2 :' + delay2)
+                    randomNumber = Math.floor(Math.random() * 4)
+                    simonColorOrder.push(allColors[randomNumber].color)
+                    allColors[randomNumber].color = 'yellow'
+                    updateView();
+                    console.log('print2 :' + delay2)
 
-                    }, delay2);
+                }, delay2);
+                delay2 += 1000
+                setTimeout(() => {
+
                     console.log(simonColorOrder)
                     allColors[0].color = 'blue';
                     allColors[1].color = 'green';
                     allColors[2].color = 'pink';
                     allColors[3].color = 'red';
                     updateView();
-                    delay2 += 1000
                 }, 1000 * (i + 1));
             }
         }
 
         function userClickColor(colorSelected) {
             userColorSelected.push(colorSelected);
-            /* if (userColorSelected.toString() == simonColorOrder.toString()) { */
-            alert('correct');
-            console.log('does this even push');
-            simonColorOrder.slice(0, howManyRounds)
-            console.log(simonColorOrder)
-            howManyRounds++;
-            userColorSelected = [];
-            /*  } */
+            if (userColorSelected.toString() == simonColorOrder.toString()) {
+                score++;
+                updateView();
+                simonColorOrder = [];
+                console.log(simonColorOrder)
+                howManyRounds++;
+                userColorSelected = [];
+                simonSaysGameStart();
+            }
         }
 
     </script>
