@@ -8,7 +8,8 @@
     <style>
         .app {
             display: flex;
-
+            flex-direction: column;
+            align-items: center;
         }
 
         body,
@@ -17,22 +18,28 @@
         }
 
         .colorSquares {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            display: flex;
+            flex-wrap: wrap;
             width: 200px;
             height: 200px;
+        }
+
+        .colorSquares div {
+            width: 100px;
+            height: 100px;
+            cursor: pointer;
         }
 
         button {
             width: 300px;
             height: 50px;
+            margin-bottom: 20px;
         }
     </style>
 </head>
 
 <body onload="updateView()">
     <div id="app"></div>
-
 
     <script>
         // Model
@@ -43,6 +50,7 @@
         let randomNumber;
         let userClicks = 0;
         let score = '';
+        let i = -1;
 
         let allColors = [
             { color: 'blue' },
@@ -56,19 +64,27 @@
             let html;
             html = /*HTML*/ `
             <button onclick="simonSaysGameStart()">Start game</button>
-            <div>Score:  ${score ?? ''}
-            `
+            <div>Score:  ${score ?? ''}</div>
+            <div class="colorSquares">
+            `;
             for (let i = 0; i < 4; i++) {
-                html += ` <div class="colorSquares"; onclick="userClickColor('${allColors[i].color}')"; style="background-color: ${allColors[i].color};"></div><br>
-                `;
+                html += `<div onclick="userClickColor('${allColors[i].color}')" style="background-color: ${allColors[i].color};"></div>`;
             }
+            html += `</div>`;
             document.getElementById('app').innerHTML = html;
         }
 
         // Controller 
+        function gameStateStart() {
+            userClicks = 0;
+            simonColorOrder = [];
+            userColorSelected = [];
+            howManyRounds = 1;
+            score = 0;
+            i = -1;
+        }
         const generateRandomNumber = () => {
             randomNumber = Math.floor(Math.random() * 4) + 1
-            console.log(randomNumber)
         }
 
         function simonSaysGameStart() {
@@ -79,7 +95,6 @@
                     simonColorOrder.push(allColors[randomNumber].color)
                     allColors[randomNumber].color = 'yellow'
                     updateView();
-                    console.log('print2 :' + delay2)
 
                 }, delay2);
                 delay2 += 1000;
@@ -94,25 +109,57 @@
                 }, 1000 * (i + 1));
             }
         }
+        /* function compareTwoArrays(arr1, arr2) {
+            return arr1.every((element, index) => {
+                return element === arr2[index]
+            });
+        } */
+
+
 
         function userClickColor(colorSelected) {
+            i++;
+            userColorSelected.push(colorSelected);
+
+            const isCorrect = userColorSelected.every((value, index) => value === simonColorOrder[index])
+            userClicks++
+            if (isCorrect && userClicks >= simonColorOrder.length) {
+                score++;
+                simonColorOrder = [];
+                howManyRounds++;
+                userColorSelected = [];
+                simonSaysGameStart();
+                userClicks = 0;
+                i = -1;
+            } else if (!isCorrect) {
+                alert('wrong')
+                gameStateStart();
+
+            }
+            updateView();
+        }
+        /* function userClickColor(colorSelected) {
+            i++;
+
+
             userColorSelected.push(colorSelected);
             userClicks++
             if (userColorSelected.toString() == simonColorOrder.toString()) {
                 score++;
                 simonColorOrder = [];
-                console.log(simonColorOrder)
                 howManyRounds++;
                 userColorSelected = [];
                 simonSaysGameStart();
                 userClicks = 0;
-            } else if (userClicks >= simonColorOrder.length && userColorSelected.toString() != simonColorOrder.toString()) {
+                i = -1;
+            } else if (userColorSelected.toString().at(i) != simonColorOrder.toString().at(i)) {
                 alert('wrong')
-                score = 0;
+                gameStateStart();
+                i = -1;
             }
             updateView();
         }
-
+ */
     </script>
 </body>
 
